@@ -24,6 +24,10 @@ body{
 
 .ttt-spot{
     background-color: rgba(207, 202, 211, .9);
+    font-size: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .col-divider, .row-divider{
