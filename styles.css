@@ -17,17 +17,22 @@ body{
     width: 500px;
     height:  500px;
     border-radius: 10px;
+    background-color: rgba(207, 202, 211, .9);
     display: grid;
     grid-template-columns: 12fr 1fr 12fr 1fr 12fr;
     grid-template-rows: 12fr 1fr 12fr 1fr 12fr;
 }
 
 .ttt-spot{
-    background-color: rgba(207, 202, 211, .9);
+    
     font-size: 2em;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.ttt-spot:hover{
+    opacity: .5;
 }
 
 .col-divider, .row-divider{

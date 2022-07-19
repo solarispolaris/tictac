@@ -20,6 +20,7 @@ const gameBoard = (() => {
                 }
             }
         }
+        createBoardElement();
     };
 
     const displayBoard = () => {
@@ -52,6 +53,43 @@ const gameBoard = (() => {
 
     };
 
+
+    const createBoardElement = () => {
+        const containerBody = document.querySelector("body");
+        //game container
+        const gameContainer = document.createElement("div");
+        gameContainer.classList.add("game-container");
+        //game elements
+        for(let row = 0; row < maxSquaresPerRow; row++){
+            for(let col = 0; col < maxSquaresPerRow; col++){
+                const gameSpot = document.createElement("div");
+                gameSpot.classList.add("ttt-spot");
+                gameSpot.setAttribute("data-row", `${row+1}`);
+                gameSpot.setAttribute("data-col", `${col+1}`);
+                gameContainer.appendChild(gameSpot);
+            }
+        }
+        //row divider
+        const rowdivOne = document.createElement("div");
+        rowdivOne.classList.add("row-divider","row1");
+        const rowdivTwo = document.createElement("div");
+        rowdivTwo.classList.add("row-divider","row2");
+
+        //col divider
+        const coldivOne = document.createElement("div");
+        coldivOne.classList.add("col-divider","col1");
+        const coldivTwo = document.createElement("div");
+        coldivTwo.classList.add("col-divider","col2");
+
+
+        gameContainer.appendChild(rowdivOne);
+        gameContainer.appendChild(rowdivTwo);
+        gameContainer.appendChild(coldivOne);
+        gameContainer.appendChild(coldivTwo);
+
+
+        containerBody.appendChild(gameContainer);
+    };
 
 
 
