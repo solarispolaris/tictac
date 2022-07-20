@@ -111,61 +111,35 @@ return {newBoard, displayBoard, updateBoard};
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //Player Object
 
-const Player = () => {
-    let name = "default";
+const Player = (sym, nam = "default") => {
+    let name = nam;
+    let symbol = sym;
     let wins = 0;
-    let myTurn = false;
+    //let myTurn = false;
     const getWins = () => { return wins; };
     const incrementWins = () => { wins++;};
     const resetWins = () => { wins = 0;};
     const makeMove =  () => { return true;};
-    const getTurn = () => {return myTurn;}
-    const toggleTurn = () => {myTurn = !myTurn;};
+    //const getTurn = () => {return myTurn;}
+    //const toggleTurn = () => {myTurn = !myTurn;};
     const getName = () => {return name;};
+    const getSymbol = () => {return symbol;};
 
-    return {getWins,incrementWins,resetWins,makeMove, getTurn, toggleTurn, getName};
+    return {getWins,incrementWins,resetWins,makeMove, getName, getSymbol};
 };
 
 //human player object
-const HumanPlayer = () =>{
-    let name = "human";
-    const proto = Player();
-    //add event listener 
-    const makeMove = () => {
-        const spots = document.querySelectorAll(".ttt-spot");
-        for(let it = 0; it < spots.length; it++){
-            spots[it].addEventListener("click", getPlayerInput, 0);
-        }
-        
-    };
-    //remove event listener when done with turn;
-    const removeListeners = () => {
-        console.log("Made Move");
-        const spots = document.querySelectorAll(".ttt-spot");
-        for(let it = 0; it < spots.length; it++){
-            spots[it].removeEventListener("click", getPlayerInput, 0);
-        }
-        //redisplay the game board
-        GameBoard.displayBoard();
-        proto.toggleTurn();
-    };
-
-    //Player Event Listener
-    const getPlayerInput = e => {
-        const turnOver = GameBoard.updateBoard(e.target.getAttribute("data-row"), e.target.getAttribute("data-col"), "x");
-                if(turnOver) removeListeners();
-    };
-
-    return Object.assign({}, proto, {makeMove} );
+const HumanPlayer = symbol =>{
+    const proto = Player(symbol, "human");
+    return Object.assign({}, proto );
 };
 
 //computer ai player object
-const AIPlayer = () =>{
-    let name = "ai";
-    const proto = Player();
+const AIPlayer = symbol =>{
+    const proto = Player(symbol, "ai");
     const makeMove = () => {
         console.log("AI Move");
-        proto.toggleTurn();
+        
     };
     return Object.assign({}, proto, {makeMove} );
 };
@@ -175,25 +149,59 @@ const AIPlayer = () =>{
 
 const GameState = (() => {
     const players = [];
-    const currentPlayer = -1;
+    let currentPlayer = 0;
 
     const setUpGame = () => {
-        const humanP = HumanPlayer();
-        const aiP = AIPlayer();
+        const humanP = HumanPlayer("x");
+        const aiP = AIPlayer("o");
         players.push(humanP);
         players.push(aiP);
-        players[0].toggleTurn();
-        players[0].makeMove();
-        players[1].makeMove();
+        
+        createHumanInput();
+        players[currentPlayer].makeMove();
     };
 
     const chooseFirstPlayer = () => {
 
     };
 
-    const currentPlayerMove = () => {
+    const nextTurn = () => {
+        //refresh board
+        toggleCurrentPlayer();
+        GameBoard.displayBoard();
+        players[currentPlayer].makeMove();
+        //iterate ai turns
+        if(players[currentPlayer].getName() === "ai") nextTurn();
+    };
+
+
+
+
+
+    //inverses the current player index and converts the result back into a number
+    const toggleCurrentPlayer = () => {
+        currentPlayer = !currentPlayer;
+        currentPlayer = currentPlayer ? 1 : 0;
+    };
+
+    const createHumanInput = () => {
         
-    }
+        const spots = document.querySelectorAll(".ttt-spot");
+        for(let it = 0; it < spots.length; it++){
+            spots[it].addEventListener("click", e => {
+                
+                if(players[currentPlayer].getName() === "human"){
+                    const turnOver = GameBoard.updateBoard(e.target.getAttribute("data-row"), e.target.getAttribute("data-col"), players[currentPlayer].getSymbol());
+                    if(turnOver){
+                        nextTurn();
+                    }   
+                }
+            }, 0);
+        }
+    };
+
+
+
     
 return {setUpGame};
 })();
@@ -201,9 +209,5 @@ return {setUpGame};
 
 //temp function calls
 GameBoard.newBoard();
-GameBoard.updateBoard(1, 1, "x");
-GameBoard.updateBoard(2, 3, "o");
-GameBoard.updateBoard(3, 2, "x");
-
 GameState.setUpGame();
 GameBoard.displayBoard();
