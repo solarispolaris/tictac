@@ -17,7 +17,7 @@ body{
     width: 500px;
     height:  500px;
     border-radius: 10px;
-    background-color: rgba(207, 202, 211, .9);
+    background-color: rgb(207, 202, 211);
     display: grid;
     grid-template-columns: 12fr 1fr 12fr 1fr 12fr;
     grid-template-rows: 12fr 1fr 12fr 1fr 12fr;
