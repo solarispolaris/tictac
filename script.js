@@ -28,6 +28,21 @@ const GameBoard = (() => {
         displayBoard();
     };
 
+    //makes sure board is still empty
+    const checkBoardIsEmpty = () => {
+        let isEmpty = false;
+        const gameSpot = document.querySelectorAll(".ttt-spot");
+        for(let it = 0; it < gameSpot.length; it++){
+            //checks each element's text content
+            let text = gameSpot[it].textContent;
+            if(text === " "){
+                isEmpty = true;
+                break;
+            }
+        }
+        return isEmpty;
+    };
+
     //display the array on the DOM board
     const displayBoard = () => {
 
@@ -101,7 +116,7 @@ const GameBoard = (() => {
 
 
 
-return {newBoard, displayBoard, updateBoard};
+return {newBoard, displayBoard, updateBoard, checkBoardIsEmpty};
 
 
 })();
@@ -115,13 +130,10 @@ const Player = (sym, nam = "default") => {
     let name = nam;
     let symbol = sym;
     let wins = 0;
-    //let myTurn = false;
     const getWins = () => { return wins; };
     const incrementWins = () => { wins++;};
     const resetWins = () => { wins = 0;};
     const makeMove =  () => { return true;};
-    //const getTurn = () => {return myTurn;}
-    //const toggleTurn = () => {myTurn = !myTurn;};
     const getName = () => {return name;};
     const getSymbol = () => {return symbol;};
 
@@ -138,7 +150,13 @@ const HumanPlayer = symbol =>{
 const AIPlayer = symbol =>{
     const proto = Player(symbol, "ai");
     const makeMove = () => {
-        console.log("AI Move");
+        let turnOver = false;
+        while(!turnOver){
+            let row = Math.floor(Math.random()*3 + 1);
+            let col = Math.floor(Math.random()*3 + 1);
+            turnOver = GameBoard.updateBoard(row, col, proto.getSymbol());
+        }
+        
         
     };
     return Object.assign({}, proto, {makeMove} );
@@ -169,10 +187,13 @@ const GameState = (() => {
         //refresh board
         toggleCurrentPlayer();
         GameBoard.displayBoard();
+        //stop game if no spaces left
+        if(!GameBoard.checkBoardIsEmpty()) return;
         players[currentPlayer].makeMove();
         //iterate ai turns
         if(players[currentPlayer].getName() === "ai") nextTurn();
     };
+
 
 
 
